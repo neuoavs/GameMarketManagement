@@ -143,46 +143,18 @@ public class MyQuery {
 		if (gameName.matches("") && studioName.matches(""))
 			JOptionPane.showConfirmDialog(null, "Check Your Enter Again");
 		else {
-			try {
-				Connection con = MyConnection.getConnection();
-				PreparedStatement ps = null;
-				if (gameName.matches("")) {
-					ps = con.prepareStatement("SELECT * FROM Game WHERE StudioName = ?;");
-					ps.setString(1, studioName);
-				}
-				else if (studioName.matches("")) {
-					ps = con.prepareStatement("SELECT * FROM Game WHERE GameName = ?;");
-					ps.setString(1, gameName);
-				}
-				ResultSet rs = ps.executeQuery();
-				table.setModel(new MyTable(rs));
-				table.getColumnModel().getColumn(7).setCellRenderer(new MyPhoto());
-				table.setRowHeight(40);
-				table.getColumnModel().getColumn(7).setPreferredWidth(70);
-			} catch (SQLException ex) {
-				Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
+			if (gameName.matches("")) {
+				MyTable.getTable(table, "SELECT * FROM Game WHERE StudioName = '" + studioName + "';");
+			}
+			if (studioName.matches("")) {
+				
+				MyTable.getTable(table, "SELECT * FROM Game WHERE GameName = '" + gameName + "';");
 			}
 		}
 	}
 	
 	public static void showGame(JTable table) {
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM Game;");
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			table.getColumnModel().getColumn(7).setCellRenderer(new MyPhoto());
-			table.setRowHeight(40);
-			table.getColumnModel().getColumn(7).setPreferredWidth(70);
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-			table.setBackground(new Color(200, 218, 236));
-			table.setForeground(new Color(27, 55, 82));
-			table.setFont(new Font("Agency FB", Font.BOLD, 21));
-		} 
-		catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		MyTable.getTable(table, "SELECT * FROM Game;");
 	}
 	
 	public static void addUser(String username, String password, String email, String country, String gender, String money) {
@@ -709,82 +681,41 @@ public class MyQuery {
 	}
 	
 	public static void findUser(String username, String email, String gender, String country, JTable table) {
+		
 		boolean b1 = username.matches("");
 		boolean b2 = email.matches("");
 		boolean b3 = gender.matches("");
 		boolean b4 = country.matches("");
-		// b1 && b2 && b3 && b4
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = null;
-			
-			if (!b1 && b2 && b3 && b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Username = ?;");
-				ps.setString(1, username);
-			}
-			else if (b1 && !b2 && b3 && b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Email = ?;");
-				ps.setString(1, email);
-			}
-			else if (b1 && b2 && !b3 && b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Gender = ?;");
-				ps.setString(1, gender);
-			}
-			else if (b1 && b2 && b3 && !b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Country = ?;");
-				ps.setString(1, country);
-			}
-			else if (b1 && !b2 && !b3 && b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Email = ? AND Gender = ?;");
-				ps.setString(1, email);
-				ps.setString(2, gender);
-			}
-			else if (b1 && b2 && !b3 && !b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Gender = ? AND Country = ?;");
-				ps.setString(1, gender);
-				ps.setString(2, country);
-			}
-			else if (b1 && !b2 && b3 && !b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Email = ? AND Country = ?;");
-				ps.setString(1, email);
-				ps.setString(2, country);
-			}
-			else if (b1 && !b2 && !b3 && !b4) {
-				ps = con.prepareStatement("SELECT * FROM Information WHERE Email = ? AND Gender = ? AND Country = ?;");
-				ps.setString(1, email);
-				ps.setString(2, gender);
-				ps.setString(2, country);
-			}
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			table.setRowHeight(40);
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-			table.setBackground(new Color(200, 218, 236));
-			table.setForeground(new Color(27, 55, 82));
-			table.setFont(new Font("Agency FB", Font.BOLD, 21));
-		} 
-		catch (SQLException ex) {
-				Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
+
+		if (!b1 && b2 && b3 && b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Username = '" + username + "';");
+		}
+		if (b1 && !b2 && b3 && b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Email = '" + email + "';");
+		}
+		if (b1 && b2 && !b3 && b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Gender = '" + gender + "';");
+		}
+		if (b1 && b2 && b3 && !b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Country = '" + country + "';");
+		}
+		if (b1 && !b2 && !b3 && b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Email = '" + email + "' AND Gender = '" + gender + "';");
+		}
+		if (b1 && b2 && !b3 && !b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Gender = '" + gender + "' AND Country = '" + country + "';");
+		}
+		if (b1 && !b2 && b3 && !b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Email = '" + email + "' AND Country = '" + country + "';");
+		}
+		if (b1 && !b2 && !b3 && !b4) {
+			MyTable.getTable(table, "SELECT * FROM Information WHERE Email = '" + email + "' AND Gender = '" + gender + "' AND Country = '" + country + "';");
 		}
 	}
 	
 	public static void showUser(JTable table) {
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM Information;");
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			table.setRowHeight(40);
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-			table.setBackground(new Color(200, 218, 236));
-			table.setForeground(new Color(27, 55, 82));
-			table.setFont(new Font("Agency FB", Font.BOLD, 21));
-		} 
-		catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		
+		MyTable.getTable(table, "SELECT * FROM Information;");
 	}
 	
 	public static void filterGame(String fromYear, String toYear, String largerCap, String smallerCap, String genreGame, JTable table) {
@@ -795,374 +726,274 @@ public class MyQuery {
 		boolean b4 = smallerCap.matches("");
 		boolean b5 = genreGame.matches("");
 		
-		// b1 && b2 && b3 && b4 && b5
-		
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = null;
-			if (!b1 && b2 && b3 && b4 && b5) {
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ?;");
-				ps.setInt(1, Integer.parseInt(fromYear));
-			}
-			else if (b1 && !b2 && b3 && b4 && b5) {
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ?;");
-				ps.setInt(1, Integer.parseInt(toYear));
-			}
-			else if (b1 && b2 && !b3 && b4 && b5) {
-				
-				float num = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= ?;");
-				ps.setFloat(1, num * 1024);
-			}
-			else if (b1 && b2 && b3 && !b4 && b5) {
-				
-				float num = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity <= ?;");
-				ps.setFloat(1, num * 1024);
-			}
-			else if (b1 && b2 && b3 && b4 && !b5) {
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE Genre = ?;");
-				ps.setString(1, genreGame);
-			}
-			// 2 Check
-			else if (!b1 && !b2 && b3 && b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ?;");
-					ps.setInt(1, num1);
-					ps.setInt(2, num2);
-				}
-			}
-			else if (b1 && !b2 && !b3 && b4 && b5) {
-				
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(largerCap);
-
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity >= ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-			}
-			else if (b1 && b2 && !b3 && !b4 && b5) {
-				
-				float num1 = Float.parseFloat(largerCap);
-				float num2 = Float.parseFloat(smallerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= ? AND GameCapacity <= ?;");
-					ps.setFloat(1, num1 * 1024);
-					ps.setFloat(2, num2 * 1024);
-				}
-			}
-			else if (b1 && b2 && b3 && !b4 && !b5) {
+		if (!b1 && b2 && b3 && b4 && b5) {
 			
-				float num = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity <= ? AND Genre = ?;");
-				ps.setFloat(1, num * 1024);
-				ps.setString(2, genreGame);
-			}
-			else if (!b1 && b2 && b3 && b4 && !b5) {
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND Genre = ?;");
-				ps.setInt(1, Integer.parseInt(fromYear));
-				ps.setString(2, genreGame);
-			}
-			else if (!b1 && b2 && !b3 && b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity >= ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-			}
-			else if (b1 && !b2 && b3 && !b4 && b5) {
-				
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity <= ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-			}
-			else if (b1 && b2 && !b3 && b4 && !b5) {
-				
-				float num = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= ? AND Genre = ?;");
-				ps.setFloat(1, num * 1024);
-				ps.setString(2, genreGame);
-			}
-			else if (!b1 && b2 && b3 && !b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity <= ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-			}
-			else if (b1 && !b2 && b3 && b4 && !b5) {
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND Genre = ?;");
-				ps.setInt(1, Integer.parseInt(toYear));
-				ps.setString(2, genreGame);
-			}
-			// 3 check
-			else if (!b1 && !b2 && !b3 && b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				float num3 = Float.parseFloat(largerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND GameCapacity >= ;");
-					ps.setInt(1, num1);
-					ps.setInt(2, num2);
-					ps.setFloat(3, num3 * 1024);
-				}
-			}
-			else if (b1 && !b2 && !b3 && !b4 && b5) {
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(largerCap);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				if (num2 > num3)
-					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity >= ? AND GameCapacity <= ?;");
-					ps.setInt(1, num1);
-					ps.setFloat(1, num2 * 1024);
-					ps.setFloat(2, num3 * 1024);
-				}
-			}
-			else if (b1 && b2 && !b3 && !b4 && !b5) {
-				
-				float num1 = Float.parseFloat(largerCap);
-				float num2 = Float.parseFloat(smallerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= ? AND GameCapacity <= ? AND Genre = ?;");
-					ps.setFloat(1, num1 * 1024);
-					ps.setFloat(2, num2 * 1024);
-					ps.setString(3, genreGame);
-				}
-			}
-			else if (!b1 && b2 && b3 && !b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity <= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-				ps.setString(3, genreGame);
-			}
-			else if (!b1 && !b2 && b3 && b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND Genre = ?;");
-					ps.setInt(1, num1);
-					ps.setInt(2, num2);
-					ps.setString(3, genreGame);
-				}
-			}
-			else if (!b1 && !b2 && b3 && !b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND GameCapacity <= ?;");
-					ps.setInt(1, num1);
-					ps.setInt(2, num2);
-					ps.setFloat(3, num3 * 1024);
-				}
-			}
-			else if (b1 && !b2 && !b3 && b4 && !b5) {
-				
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity >= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2);
-				ps.setString(3, genreGame);
-			}
-			else if (!b1 && b2 && !b3 && !b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(largerCap);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				if (num2 > num3)
-					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity >= ? AND GameCapacity <= ?;");
-					ps.setInt(1, num1);
-					ps.setFloat(2, num2 * 1024);
-					ps.setFloat(3, num3 * 1024);
-				}
-			}
-			else if (b1 && !b2 && b3 && !b4 && !b5) {
-				
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity <= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-				ps.setString(3, genreGame);
-			}
-			else if (!b1 && b2 && !b3 && b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(largerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity >= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-				ps.setString(3, genreGame);
-			}
-			// 4 Check - 5
-			else if (!b1 && !b2 && !b3 && !b4 && b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				float num3 = Float.parseFloat(largerCap);
-				float num4 = Float.parseFloat(smallerCap);
-				
-				if (num1 > num2) {
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-					if (num3 > num4)
-						JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				}
-				else if (num3 > num4)
-					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND GameCapacity >= ? AND GameCapacity <= ?;");
-					ps.setInt(1, num1);
-					ps.setInt(2, num2);
-					ps.setFloat(3, num3 * 1024);
-					ps.setFloat(4, num4 * 1024);
-				}	
-			}
-			else if (b1 && !b2 && !b3 && !b4 && !b5) {
-				
-				int num1 = Integer.parseInt(toYear);
-				float num2 = Float.parseFloat(largerCap);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= ? AND GameCapacity >= ? AND GameCapacity <= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-				ps.setFloat(3, num3 * 1024);
-				ps.setString(4, genreGame);
-			}
-			else if (!b1 && b2 && !b3 && !b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				float num2 = Float.parseFloat(largerCap);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND GameCapacity >= ? AND GameCapacity <= ? AND Genre = ?;");
-				ps.setInt(1, num1);
-				ps.setFloat(2, num2 * 1024);
-				ps.setFloat(3, num3 * 1024);
-				ps.setString(4, genreGame);
-			}
-			else if (!b1 && !b2 && b3 && !b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				float num3 = Float.parseFloat(smallerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND GameCapacity <= ? AND Genre = ?;");
-					ps.setInt(1, num1);
-					ps.setInt(1, num2);
-					ps.setFloat(3, num3 * 1024);
-					ps.setString(4, genreGame);
-				}
-			}
-			else if (!b1 && !b2 && !b3 && b4 && !b5) {
-				
-				int num1 = Integer.parseInt(fromYear);
-				int num2 = Integer.parseInt(toYear);
-				float num3 = Float.parseFloat(largerCap);
-				
-				if (num1 > num2)
-					JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
-				else {
-					ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= ? AND ReleaseYear <= ? AND GameCapacity >= ? AND Genre = ?;");
-					ps.setInt(1, num1);
-					ps.setInt(1, num2);
-					ps.setFloat(3, num3 * 1024);
-					ps.setString(4, genreGame);
-				}
-			}
-			else
-				ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game;");
+			int num = Integer.parseInt(fromYear);
 			
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			table.setRowHeight(40);
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-			table.setBackground(new Color(200, 218, 236));
-			table.setForeground(new Color(27, 55, 82));
-			table.setFont(new Font("Agency FB", Font.BOLD, 21));
-		} catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num +";");
 		}
+		else if (b1 && !b2 && b3 && b4 && b5) {
+			
+			int num = Integer.parseInt(toYear);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num + ";");
+		}
+		else if (b1 && b2 && !b3 && b4 && b5) {
+			
+			float num = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= " + num * 1024 + ";");
+		}
+		else if (b1 && b2 && b3 && !b4 && b5) {
+			
+			float num = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity <= " + num * 1024 + ";");
+		}
+		else if (b1 && b2 && b3 && b4 && !b5) {
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE Genre = '" + genreGame + "';");
+		}
+		// 2 Check
+		else if (!b1 && !b2 && b3 && b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + ";");
+			}
+		}
+		else if (b1 && !b2 && !b3 && b4 && b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(largerCap);
+
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity >= " + num2 * 1024 + ";");
+		}
+		else if (b1 && b2 && !b3 && !b4 && b5) {
+			
+			float num1 = Float.parseFloat(largerCap);
+			float num2 = Float.parseFloat(smallerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= " + num1 * 1024 + " AND GameCapacity <= " + num2 * 1024 + ";");
+			}
+		}
+		else if (b1 && b2 && b3 && !b4 && !b5) {
 		
+			float num = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity <= " + num * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && b3 && b4 && !b5) {
+			
+			int num = Integer.parseInt(fromYear);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && !b3 && b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity >= " + num2 * 1024 + ";");
+		}
+		else if (b1 && !b2 && b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity <= " + num2 * 1024 + ";");
+		}
+		else if (b1 && b2 && !b3 && b4 && !b5) {
+			
+			float num = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= " + num * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity <= " + num2 * 1024 + ";");
+		}
+		else if (b1 && !b2 && b3 && b4 && !b5) {
+			
+			int num = Integer.parseInt(toYear);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num + " AND Genre = '" + genreGame + "';");
+		}
+		// 3 check
+		else if (!b1 && !b2 && !b3 && b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			float num3 = Float.parseFloat(largerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND GameCapacity >= " + num3 * 1024 + ";");
+			}
+		}
+		else if (b1 && !b2 && !b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(largerCap);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			if (num2 > num3)
+				JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity >= " + num2 * 1024 + " AND GameCapacity <= " + num3 * 1024 + ";");
+			}
+		}
+		else if (b1 && b2 && !b3 && !b4 && !b5) {
+			
+			float num1 = Float.parseFloat(largerCap);
+			float num2 = Float.parseFloat(smallerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE GameCapacity >= " + num1 * 1024 + " AND GameCapacity <= " + num2 * 1024 + " AND Genre = '" + genreGame + "';");
+			}
+		}
+		else if (!b1 && b2 && b3 && !b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity <= " + num2 * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && !b2 && b3 && b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND Genre = '" + genreGame + "';");
+			}
+		}
+		else if (!b1 && !b2 && b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND GameCapacity <= " + num3 * 1024 + ";");
+			}
+		}
+		else if (b1 && !b2 && !b3 && b4 && !b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity >= " + num2 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && !b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(largerCap);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			if (num2 > num3)
+				JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity >= " + num2 * 1024 + " AND GameCapacity <= " + num3 * 1024 + ";");
+			}
+		}
+		else if (b1 && !b2 && b3 && !b4 && !b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity <= " + num2 * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && !b3 && b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(largerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity >= " + num2 * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		// 4 Check - 5
+		else if (!b1 && !b2 && !b3 && !b4 && b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			float num3 = Float.parseFloat(largerCap);
+			float num4 = Float.parseFloat(smallerCap);
+			
+			if (num1 > num2) {
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+				if (num3 > num4)
+					JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			}
+			else if (num3 > num4)
+				JOptionPane.showConfirmDialog(null, "The 'Larger' cannot be less than the 'Smaller'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND GameCapacity >= " + num3 * 1024 + " AND GameCapacity <= " + num4 * 1024 + ";");
+			}	
+		}
+		else if (b1 && !b2 && !b3 && !b4 && !b5) {
+			
+			int num1 = Integer.parseInt(toYear);
+			float num2 = Float.parseFloat(largerCap);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear <= " + num1 + " AND GameCapacity >= " + num2 * 1024 + " AND GameCapacity <= " + num3 * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && b2 && !b3 && !b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			float num2 = Float.parseFloat(largerCap);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND GameCapacity >= " + num2 * 1024 + " AND GameCapacity <= " + num3 * 1024 + " AND Genre = '" + genreGame + "';");
+		}
+		else if (!b1 && !b2 && b3 && !b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			float num3 = Float.parseFloat(smallerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND GameCapacity <= " + num3 * 1024 + " AND Genre = '" + genreGame + "';");
+			}
+		}
+		else if (!b1 && !b2 && !b3 && b4 && !b5) {
+			
+			int num1 = Integer.parseInt(fromYear);
+			int num2 = Integer.parseInt(toYear);
+			float num3 = Float.parseFloat(largerCap);
+			
+			if (num1 > num2)
+				JOptionPane.showConfirmDialog(null, "The 'From Year' cannot be less than the 'To Year'");
+			else {
+				MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game WHERE ReleaseYear >= " + num1 + " AND ReleaseYear <= " + num2 + " AND GameCapacity >= " + num3 * 1024 + " AND Genre = '" + genreGame + "';");
+			}
+		}
+		else {
+			MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game;");
+		}
 	}
 	
 	// Show Table Cart
 	public static void showTableCart(JTable table, int userID) {
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT GameName, StudioName, Genre, Price FROM (CartItem INNER JOIN Game ON CartItem.GameID = Game.GameID) WHERE UserID = ?;");
-			ps.setInt(1, userID);
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-	        table.setBackground(new Color(200, 218, 236));
-	        table.setForeground(new Color(27, 55, 82));
-	        table.setFont(new Font("Agency FB", Font.BOLD, 21));
-	        table.setRowHeight(40);
-	        
-	        
-		} catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		MyTable.getTable(table, "SELECT GameName, StudioName, Genre, Price FROM (CartItem INNER JOIN Game ON CartItem.GameID = Game.GameID) WHERE UserID = " + userID + ";");
 	}
 	
 	// Remove games of Cart
@@ -1278,43 +1109,16 @@ public class MyQuery {
 	}
 	
 	//Show data of Home Game
-	public static void showHomeTable(JTable table) {
-			
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game;");
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			JTableHeader tableHeader = table.getTableHeader();
-		    tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-		    table.setBackground(new Color(200, 218, 236));
-		    table.setForeground(new Color(27, 55, 82));
-		    table.setFont(new Font("Agency FB", Font.BOLD, 21));
-		    table.setRowHeight(40);
-		} catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+	public static void showHomeTable(JTable table) {	
+		MyTable.getTable(table, "SELECT GameName, StudioName, Genre, ReleaseYear, Price FROM Game;");
 	}
 	
 	//Show Data of your game
 	public static void showYourGameTable(JTable table, JLabel label){
 		int userID = getIDUser(label);
 		
-		try {
-			Connection con = MyConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT GameName, StudioName FROM UsersGame INNER JOIN Game ON UsersGame.GameID = Game.GameID WHERE UserID = ?;");
-			ps.setInt(1, userID);
-			ResultSet rs = ps.executeQuery();
-			table.setModel(new MyTable(rs));
-			JTableHeader tableHeader = table.getTableHeader();
-	        tableHeader.setDefaultRenderer(new MyHeaderColor(new Font("Agency FB", Font.BOLD, 26)));
-	        table.setBackground(new Color(200, 218, 236));
-	        table.setForeground(new Color(27, 55, 82));
-	        table.setFont(new Font("Agency FB", Font.BOLD, 21));
-	        table.setRowHeight(40);
-		} catch (SQLException ex) {
-			Logger.getLogger(ManagementGameView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		MyTable.getTable(table, "SELECT GameName, StudioName FROM UsersGame INNER JOIN Game ON UsersGame.GameID = Game.GameID WHERE UserID = " + userID + ";");
+		
 	}
 	
 	// set personal of user

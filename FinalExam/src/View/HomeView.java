@@ -902,7 +902,7 @@ public class HomeView extends JFrame {
 				String largerCap = largerTextField.getText();
 				String smallerCap = smallerTextField.getText();
 				String genreGame = genreComboBox.getSelectedItem().toString();
-				MyQuery.filterGame(fromYear, toYear, largerCap, smallerCap, genreGame, table);
+//				MyQuery.filterGame(fromYear, toYear, largerCap, smallerCap, genreGame, table);
 			}
 		});
 		filterButton.setForeground(new Color(62, 124, 185));
